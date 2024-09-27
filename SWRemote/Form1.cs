@@ -22,6 +22,8 @@ namespace SWRemote
             MessageBox.Show("テキスト", "デバッグ", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             var server = RestServerBuilder.UseDefaults().Build();
+            //デフォルトだとlocalhost意外は弾く Stormworksは127.0.0.1でアクセスする
+            server.Prefixes.Add("http://127.0.0.1:1234/");
             server.Start();
         }
     }
@@ -29,11 +31,13 @@ namespace SWRemote
     [RestResource]
     public class MyResource
     {
+
         [RestRoute("Get", "/api/test")]
         public async Task Test(IHttpContext context)
         {
             Debug.WriteLine("ACCESS");
-            await context.Response.SendResponseAsync("Successfully hit the test route!").ConfigureAwait(false);
+            //await context.Response.SendResponseAsync("Successfully hit the test route!").ConfigureAwait(false);
+            await context.Response.SendResponseAsync("Welcome!").ConfigureAwait(false);
         }
     }
 }
