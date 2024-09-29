@@ -1,6 +1,7 @@
 using Grapevine;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Xml.Linq;
 
 namespace SWRemote
 {
@@ -18,8 +19,8 @@ namespace SWRemote
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Debug.WriteLine("a");
-            MessageBox.Show("テキスト", "デバッグ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("テキスト", "デバッグ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Settings.count = 0;
 
             var server = RestServerBuilder.UseDefaults().Build();
             //デフォルトだとlocalhost意外は弾く Stormworksは127.0.0.1でアクセスする
@@ -31,13 +32,19 @@ namespace SWRemote
     [RestResource]
     public class MyResource
     {
-
         [RestRoute("Get", "/api/test")]
         public async Task Test(IHttpContext context)
         {
             Debug.WriteLine("ACCESS");
+            Settings.count = Settings.count + 1;
+            Debug.WriteLine(Settings.count);
             //await context.Response.SendResponseAsync("Successfully hit the test route!").ConfigureAwait(false);
-            await context.Response.SendResponseAsync("Welcome!").ConfigureAwait(false);
+            await context.Response.SendResponseAsync("Welcome!"+Settings.count.ToString()).ConfigureAwait(false);
         }
+    }
+
+    public static class Settings
+    {
+        public static int count;
     }
 }
