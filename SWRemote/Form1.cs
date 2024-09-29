@@ -25,6 +25,8 @@ namespace SWRemote
             var server = RestServerBuilder.UseDefaults().Build();
             //デフォルトだとlocalhost意外は弾く Stormworksは127.0.0.1でアクセスする
             server.Prefixes.Add("http://127.0.0.1:1234/");
+            server.ContentFolders.Add(new ContentFolder(Path.Combine(Directory.GetCurrentDirectory(), "website")));
+            server.UseContentFolders();
             server.Start();
         }
     }

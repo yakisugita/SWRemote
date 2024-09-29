@@ -12,4 +12,13 @@
     <PackageReference Include="Grapevine" Version="5.0.0-rc.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="website\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="website\main.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
