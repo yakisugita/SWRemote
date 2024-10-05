@@ -35,8 +35,8 @@ namespace SWRemote
     [RestResource]
     public class MyResource
     {
-        [RestRoute("Get", "/api/test")]
-        public async Task Test(IHttpContext context)
+        [RestRoute("Get", "/api/input")]
+        public async Task Receive(IHttpContext context)
         {
             Debug.WriteLine("ACCESS");
 
@@ -54,6 +54,32 @@ namespace SWRemote
             Debug.WriteLine(ValueStore.NumAD.ToString());
             //await context.Response.SendResponseAsync("Successfully hit the test route!").ConfigureAwait(false);
             await context.Response.SendResponseAsync("Welcome!"+ValueStore.count.ToString()).ConfigureAwait(false);
+        }
+
+        // Stormworksのマイコンに情報を送る
+        // スマホ切断時 SWREMOTE|DISCONNECTED
+        // [U]p/[D]own/[N]eutral/[V]oid(ボタン操作無効) ボタン操作のとき数値は+000
+        // SWREMOTE|READY|WS[3桁整数][U/D/N]|AD[3桁整数][U/D/N]|Up/Down[3桁整数][U/D/N]|Left/Right[3桁整数][U/D/N]|1[T/F]2[T/F]3[T/F]4[T/F]5[T/F]6[T/F]7[T/F]8[T/F]
+        // 例 SWREMOTE|READY|WS+000U|AD-050V|UD+000N|LR+000D|TFFFFFFF
+        [RestRoute("Get", "/api/sw")]
+        public async Task Send(IHttpContext context)
+        {
+            Debug.WriteLine("ACCESS");
+
+            for (int i = 0; i < context.Request.QueryString.AllKeys.Length; i++)
+            {
+                switch (context.Request.QueryString.AllKeys[i])
+                {
+                    case "numAD":
+                        int.TryParse(context.Request.QueryString.GetValue<string>(context.Request.QueryString.AllKeys[i]), out ValueStore.NumAD);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            Debug.WriteLine(ValueStore.NumAD.ToString());
+            //await context.Response.SendResponseAsync("Successfully hit the test route!").ConfigureAwait(false);
+            await context.Response.SendResponseAsync("Welcome!" + ValueStore.count.ToString()).ConfigureAwait(false);
         }
     }
 
